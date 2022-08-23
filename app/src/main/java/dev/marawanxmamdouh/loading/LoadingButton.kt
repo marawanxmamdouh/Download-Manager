@@ -66,6 +66,13 @@ class LoadingButton @JvmOverloads constructor(
 
     private fun drawLoadingState(canvas: Canvas) {
         drawProgressRectangle(canvas)
+        paint.color = resources.getColor(R.color.white)
+        canvas.drawText(
+            resources.getString(R.string.button_loading),
+            widthSize / 2 - paint.measureText(resources.getString(R.string.button_loading)) / 2 - radius,
+            heightSize / 2 + paint.textSize / 3,
+            paint
+        )
         drawProgressCircle(canvas)
     }
 
@@ -120,6 +127,7 @@ class LoadingButton @JvmOverloads constructor(
         s1 = widthSize / 2 + paint.measureText(resources.getString(R.string.button_loading)) / 4 + (radius/2)
         s2 = heightSize / 4f
         // TODO("until check if the button is completed")
+        //canvas.drawColor(resources.getColor(R.color.colorPrimary), PorterDuff.Mode.CLEAR)
         startProgressCircleAnimation()
         startProgressRectangleAnimation()
     }
