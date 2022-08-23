@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
 import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlin.properties.Delegates
 
 
@@ -24,6 +25,10 @@ class LoadingButton @JvmOverloads constructor(
     private var radius = 0f
     private var s1 = 0f
     private var s2 = 0f
+
+    // Progress Rectangle
+    private var progressRectangleAnimator = ValueAnimator()
+    private var currentPosition = 0
 
     private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { p, old, new ->
 
@@ -60,7 +65,19 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     private fun drawLoadingState(canvas: Canvas) {
+        drawProgressRectangle(canvas)
         drawProgressCircle(canvas)
+    }
+
+    private fun drawProgressRectangle(canvas: Canvas) {
+        paint.color = resources.getColor(R.color.colorPrimaryDark)
+        canvas.drawRect(
+            0f,
+            0f,
+            currentPosition.toFloat(),
+            heightSize,
+            paint
+        )
     }
 
     private fun drawProgressCircle(canvas: Canvas) {
@@ -84,6 +101,19 @@ class LoadingButton @JvmOverloads constructor(
         progressCircleAnimator.start()
     }
 
+    private fun startProgressRectangleAnimation() {
+        progressRectangleAnimator.cancel()
+        progressRectangleAnimator = ValueAnimator.ofInt(0, widthSize.roundToInt()).apply {
+            duration = 5000
+            interpolator = LinearInterpolator()
+            addUpdateListener { valueAnimator ->
+                currentPosition = valueAnimator.animatedValue as Int
+                invalidate()
+            }
+        }
+        progressRectangleAnimator.start()
+    }
+
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         radius = min(w, h) / 2f
@@ -91,6 +121,7 @@ class LoadingButton @JvmOverloads constructor(
         s2 = heightSize / 4f
         // TODO("until check if the button is completed")
         startProgressCircleAnimation()
+        startProgressRectangleAnimation()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
