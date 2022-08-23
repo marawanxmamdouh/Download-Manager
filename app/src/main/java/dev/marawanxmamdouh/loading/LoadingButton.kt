@@ -1,11 +1,14 @@
 package dev.marawanxmamdouh.loading
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.LinearInterpolator
+import kotlin.math.min
 import kotlin.properties.Delegates
 
 
@@ -14,6 +17,13 @@ class LoadingButton @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
     private var widthSize = 0f
     private var heightSize = 0f
+
+    // Progress Circle
+    private var progressCircleAnimator = ValueAnimator()
+    private var currentSweepAngle = 0
+    private var radius = 0f
+    private var s1 = 0f
+    private var s2 = 0f
 
     private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { p, old, new ->
 
@@ -36,6 +46,7 @@ class LoadingButton @JvmOverloads constructor(
         super.onDraw(canvas)
         canvas.drawColor(resources.getColor(R.color.colorPrimary))
         drawStartState(canvas)
+        drawLoadingState(canvas)
     }
 
     private fun drawStartState(canvas: Canvas) {
@@ -48,6 +59,40 @@ class LoadingButton @JvmOverloads constructor(
         )
     }
 
+    private fun drawLoadingState(canvas: Canvas) {
+        drawProgressCircle(canvas)
+    }
+
+    private fun drawProgressCircle(canvas: Canvas) {
+        paint.color = resources.getColor(R.color.colorAccent)
+        canvas.save()
+        canvas.translate(s1, s2)
+        canvas.drawArc(0f, 0f, radius, radius, -90f, currentSweepAngle.toFloat(), true, paint)
+        canvas.restore()
+    }
+
+    private fun startProgressCircleAnimation() {
+        progressCircleAnimator.cancel()
+        progressCircleAnimator = ValueAnimator.ofInt(0, 360).apply {
+            duration = 5000
+            interpolator = LinearInterpolator()
+            addUpdateListener { valueAnimator ->
+                currentSweepAngle = valueAnimator.animatedValue as Int
+                invalidate()
+            }
+        }
+        progressCircleAnimator.start()
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        radius = min(w, h) / 2f
+        s1 = widthSize / 2 + paint.measureText(resources.getString(R.string.button_loading)) / 4 + (radius/2)
+        s2 = heightSize / 4f
+        // TODO("until check if the button is completed")
+        startProgressCircleAnimation()
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val minw: Int = paddingLeft + paddingRight + suggestedMinimumWidth
         val w: Int = resolveSizeAndState(minw, widthMeasureSpec, 1)
@@ -58,6 +103,7 @@ class LoadingButton @JvmOverloads constructor(
         )
         widthSize = w.toFloat()
         heightSize = h.toFloat()
+        radius = heightSize / 4
 
         setMeasuredDimension(w, h)
     }
