@@ -31,7 +31,10 @@ class LoadingButton @JvmOverloads constructor(
     private var currentPosition = 0
 
     private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { p, old, new ->
-
+        println("ButtonState Completed")
+        startProgressCircleAnimation()
+        startProgressRectangleAnimation()
+        invalidate()
     }
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -43,15 +46,26 @@ class LoadingButton @JvmOverloads constructor(
 
 
     init {
-
+        isClickable = true
     }
 
+    override fun performClick(): Boolean {
+        super.performClick()
+        if (buttonState == ButtonState.Completed) {
+            buttonState = ButtonState.Loading
+        }
+        return true
+    }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.drawColor(resources.getColor(R.color.colorPrimary))
-        drawStartState(canvas)
-        drawLoadingState(canvas)
+        when (buttonState) {
+            ButtonState.Loading -> {
+                drawLoadingState(canvas)
+            }
+            else -> drawStartState(canvas)
+        }
     }
 
     private fun drawStartState(canvas: Canvas) {
@@ -65,6 +79,7 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     private fun drawLoadingState(canvas: Canvas) {
+        canvas.drawColor(resources.getColor(R.color.colorPrimary))
         drawProgressRectangle(canvas)
         paint.color = resources.getColor(R.color.white)
         canvas.drawText(
@@ -126,10 +141,6 @@ class LoadingButton @JvmOverloads constructor(
         radius = min(w, h) / 2f
         s1 = widthSize / 2 + paint.measureText(resources.getString(R.string.button_loading)) / 4 + (radius/2)
         s2 = heightSize / 4f
-        // TODO("until check if the button is completed")
-        //canvas.drawColor(resources.getColor(R.color.colorPrimary), PorterDuff.Mode.CLEAR)
-        startProgressCircleAnimation()
-        startProgressRectangleAnimation()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
