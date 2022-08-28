@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
+import androidx.core.content.ContextCompat
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.properties.Delegates
@@ -34,7 +35,7 @@ class LoadingButton @JvmOverloads constructor(
     private var progressRectangleAnimator = ValueAnimator()
     private var currentPosition = 0
 
-    private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { p, old, new ->
+    private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { _, old, new ->
         Log.i(TAG, " (line 38): ButtonState changed from $old to $new")
         if (new == ButtonState.Clicked) {
             startProgressCircleAnimation()
@@ -64,7 +65,7 @@ class LoadingButton @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawColor(resources.getColor(R.color.colorPrimary))
+        canvas.drawColor(ContextCompat.getColor(context, R.color.colorPrimary))
         when (buttonState) {
             ButtonState.Completed -> drawStartState(canvas)
             else -> drawLoadingState(canvas)
@@ -72,7 +73,7 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     private fun drawStartState(canvas: Canvas) {
-        paint.color = resources.getColor(R.color.white)
+        paint.color = ContextCompat.getColor(context, R.color.white)
         canvas.drawText(
             resources.getString(R.string.button_name),
             widthSize / 2 - paint.measureText(resources.getString(R.string.button_name)) / 2,
@@ -82,9 +83,9 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     private fun drawLoadingState(canvas: Canvas) {
-        canvas.drawColor(resources.getColor(R.color.colorPrimary))
+        canvas.drawColor(ContextCompat.getColor(context, R.color.colorPrimary))
         drawProgressRectangle(canvas)
-        paint.color = resources.getColor(R.color.white)
+        paint.color = ContextCompat.getColor(context, R.color.white)
         canvas.drawText(
             resources.getString(R.string.button_loading),
             widthSize / 2 - paint.measureText(resources.getString(R.string.button_loading)) / 2 - radius,
@@ -95,7 +96,7 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     private fun drawProgressRectangle(canvas: Canvas) {
-        paint.color = resources.getColor(R.color.colorPrimaryDark)
+        paint.color = ContextCompat.getColor(context, R.color.colorPrimaryDark)
         canvas.drawRect(
             0f,
             0f,
@@ -106,7 +107,7 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     private fun drawProgressCircle(canvas: Canvas) {
-        paint.color = resources.getColor(R.color.colorAccent)
+        paint.color = ContextCompat.getColor(context, R.color.colorAccent)
         canvas.save()
         canvas.translate(s1, s2)
         canvas.drawArc(0f, 0f, radius, radius, -90f, currentSweepAngle.toFloat(), true, paint)
@@ -155,15 +156,16 @@ class LoadingButton @JvmOverloads constructor(
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         radius = min(w, h) / 2f
-        s1 = widthSize / 2 + paint.measureText(resources.getString(R.string.button_loading)) / 4 + (radius/2)
+        s1 =
+            widthSize / 2 + paint.measureText(resources.getString(R.string.button_loading)) / 4 + (radius / 2)
         s2 = heightSize / 4f
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val minw: Int = paddingLeft + paddingRight + suggestedMinimumWidth
-        val w: Int = resolveSizeAndState(minw, widthMeasureSpec, 1)
+        val minW: Int = paddingLeft + paddingRight + suggestedMinimumWidth
+        val w: Int = resolveSizeAndState(minW, widthMeasureSpec, 1)
         val h: Int = resolveSizeAndState(
-            View.MeasureSpec.getSize(w),
+            MeasureSpec.getSize(w),
             heightMeasureSpec,
             0
         )
