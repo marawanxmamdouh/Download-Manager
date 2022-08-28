@@ -1,17 +1,21 @@
 package dev.marawanxmamdouh.loading
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.properties.Delegates
 
+private const val TAG = "LoadingButton"
 
 class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -31,10 +35,11 @@ class LoadingButton @JvmOverloads constructor(
     private var currentPosition = 0
 
     private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { p, old, new ->
-        println("ButtonState Completed")
-        startProgressCircleAnimation()
-        startProgressRectangleAnimation()
-        invalidate()
+        Log.i(TAG, " (line 38): ButtonState changed from $old to $new")
+        if (new == ButtonState.Clicked) {
+            startProgressCircleAnimation()
+            startProgressRectangleAnimation()
+        }
     }
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -52,7 +57,7 @@ class LoadingButton @JvmOverloads constructor(
     override fun performClick(): Boolean {
         super.performClick()
         if (buttonState == ButtonState.Completed) {
-            buttonState = ButtonState.Loading
+            buttonState = ButtonState.Clicked
         }
         return true
     }
@@ -61,10 +66,8 @@ class LoadingButton @JvmOverloads constructor(
         super.onDraw(canvas)
         canvas.drawColor(resources.getColor(R.color.colorPrimary))
         when (buttonState) {
-            ButtonState.Loading -> {
-                drawLoadingState(canvas)
-            }
-            else -> drawStartState(canvas)
+            ButtonState.Completed -> drawStartState(canvas)
+            else -> drawLoadingState(canvas)
         }
     }
 
@@ -128,10 +131,23 @@ class LoadingButton @JvmOverloads constructor(
         progressRectangleAnimator = ValueAnimator.ofInt(0, widthSize.roundToInt()).apply {
             duration = 5000
             interpolator = LinearInterpolator()
+
             addUpdateListener { valueAnimator ->
                 currentPosition = valueAnimator.animatedValue as Int
                 invalidate()
             }
+
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationStart(animation: Animator?) {
+                    Log.i(TAG, "onAnimationStart (line 143): Animation started")
+                    buttonState = ButtonState.Loading
+                }
+
+                override fun onAnimationEnd(animation: Animator?) {
+                    Log.i(TAG, "onAnimationEnd (line 147): Animation Ended")
+                    buttonState = ButtonState.Completed
+                }
+            })
         }
         progressRectangleAnimator.start()
     }
