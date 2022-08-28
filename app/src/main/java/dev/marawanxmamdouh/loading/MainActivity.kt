@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 
@@ -43,6 +44,11 @@ class MainActivity : AppCompatActivity() {
                 R.id.radioButton2 -> downloadUrl =
                     "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter"
                 R.id.radioButton3 -> downloadUrl = "https://github.com/square/retrofit"
+                else -> {
+                    Toast.makeText(this, "Please select a download option", Toast.LENGTH_SHORT)
+                        .show()
+                    return@setOnClickListener
+                }
             }
             Log.i(TAG, "onCreate (line 42): $downloadUrl")
             download()
