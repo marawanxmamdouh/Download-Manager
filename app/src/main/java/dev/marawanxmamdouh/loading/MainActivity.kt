@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -16,7 +15,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.widget.RadioGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import dev.marawanxmamdouh.loading.util.sendNotification
@@ -44,11 +42,10 @@ class MainActivity : AppCompatActivity() {
         val radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
 
         customButton.setOnClickListener {
-            when (radioGroup.checkedRadioButtonId) {
-                R.id.radioButton1 -> downloadUrl = "https://github.com/bumptech/glide"
-                R.id.radioButton2 -> downloadUrl =
-                    "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starterr"
-                R.id.radioButton3 -> downloadUrl = "https://github.com/square/retrofit"
+            downloadUrl = when (radioGroup.checkedRadioButtonId) {
+                R.id.radioButton1 -> "https://github.com/bumptech/glide"
+                R.id.radioButton2 -> "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starterr"
+                R.id.radioButton3 -> "https://github.com/square/retrofit"
                 else -> {
                     Toast.makeText(this, "Please select a download option", Toast.LENGTH_SHORT)
                         .show()
@@ -97,7 +94,11 @@ class MainActivity : AppCompatActivity() {
                     intent.putExtra("status", "Fail")
                     val notificationManager =
                         getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    notificationManager.sendNotification("Download failed", applicationContext, intent)
+                    notificationManager.sendNotification(
+                        "Download failed",
+                        applicationContext,
+                        intent
+                    )
                 }
                 DownloadManager.STATUS_PAUSED -> {
                     Log.i(TAG, "onReceive (line 92): STATUS_PAUSED")
@@ -154,11 +155,5 @@ class MainActivity : AppCompatActivity() {
             notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(notificationChannel)
         }
-    }
-
-    companion object {
-        private const val URL =
-            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
-        private const val CHANNEL_ID = "channelId"
     }
 }
