@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -15,6 +16,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.widget.RadioGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import dev.marawanxmamdouh.loading.util.sendNotification
@@ -73,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         query.setFilterById(downloadID)
         val cursor = downloadManager.query(query)
         if (cursor.moveToFirst()) {
-            val intent = Intent(this@MainActivity, DetailActivity::class.java)
+            val intent = Intent(applicationContext, DetailActivity::class.java)
             intent.putExtra(
                 "downloadName",
                 downloadUrl.substring(downloadUrl.lastIndexOf("/") + 1)
@@ -81,20 +83,21 @@ class MainActivity : AppCompatActivity() {
             when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
                 DownloadManager.STATUS_SUCCESSFUL -> {
                     Log.i(TAG, "getStatus (line 77): Download completed successfully")
+                    intent.putExtra("status", "Success")
                     val notificationManager =
                         getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                     notificationManager.sendNotification(
-                        "Download completed Successfully",
-                        applicationContext
+                        "Download completed Success",
+                        applicationContext,
+                        intent,
                     )
-                    intent.putExtra("status", DownloadManager.STATUS_SUCCESSFUL);
                 }
                 DownloadManager.STATUS_FAILED -> {
                     Log.i(TAG, "getStatus (line 86): Download failed")
+                    intent.putExtra("status", "Fail")
                     val notificationManager =
                         getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    notificationManager.sendNotification("Download failed", applicationContext)
-                    intent.putExtra("status", DownloadManager.STATUS_FAILED)
+                    notificationManager.sendNotification("Download failed", applicationContext, intent)
                 }
                 DownloadManager.STATUS_PAUSED -> {
                     Log.i(TAG, "onReceive (line 92): STATUS_PAUSED")

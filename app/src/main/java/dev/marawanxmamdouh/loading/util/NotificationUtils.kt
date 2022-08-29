@@ -10,9 +10,7 @@ import dev.marawanxmamdouh.loading.R
 
 private const val NOTIFICATION_ID = 0
 
-fun NotificationManager.sendNotification(messageBody: String, applicationContext: Context) {
-
-    val contentIntent = Intent(applicationContext, DetailActivity::class.java)
+fun NotificationManager.sendNotification(messageBody: String, applicationContext: Context, contentIntent: Intent) {
 
     val contentPendingIntent = PendingIntent.getActivity(
         applicationContext,
