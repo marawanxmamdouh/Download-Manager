@@ -88,6 +88,11 @@ class MainActivity : AppCompatActivity() {
                         applicationContext,
                         intent,
                     )
+                    Toast.makeText(
+                        applicationContext,
+                        "Download completed Success",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 DownloadManager.STATUS_FAILED -> {
                     Log.i(TAG, "getStatus (line 86): Download failed")
@@ -99,6 +104,11 @@ class MainActivity : AppCompatActivity() {
                         applicationContext,
                         intent
                     )
+                    Toast.makeText(
+                        applicationContext,
+                        "Download failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
                 DownloadManager.STATUS_PAUSED -> {
                     Log.i(TAG, "onReceive (line 92): STATUS_PAUSED")
