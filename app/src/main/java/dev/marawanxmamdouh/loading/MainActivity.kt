@@ -52,6 +52,8 @@ class MainActivity : AppCompatActivity() {
             }
             Log.i(TAG, "onCreate (line 42): $downloadUrl")
             download()
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.sendNotification( "Downloading...", applicationContext)
         }
 
         createChannel("Downloading", "Download")
