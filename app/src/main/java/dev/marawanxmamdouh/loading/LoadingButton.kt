@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.core.content.ContextCompat
+import androidx.core.content.withStyledAttributes
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.properties.Delegates
@@ -50,9 +51,18 @@ class LoadingButton @JvmOverloads constructor(
         typeface = Typeface.create("", Typeface.BOLD)
     }
 
+    private var btnBackgroundColor = 0
+    private var textColor = 0
+    private var animationDuration = 0L
 
     init {
         isClickable = true
+
+        context.withStyledAttributes(attrs, R.styleable.LoadingButton) {
+            btnBackgroundColor = getColor(R.styleable.LoadingButton_btn_background_color, 0)
+            textColor = getColor(R.styleable.LoadingButton_text_color, 0)
+            animationDuration = getInt(R.styleable.LoadingButton_animation_duration, 0).toLong()
+        }
     }
 
     override fun performClick(): Boolean {
@@ -65,7 +75,7 @@ class LoadingButton @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawColor(ContextCompat.getColor(context, R.color.colorPrimary))
+        canvas.drawColor(btnBackgroundColor)
         when (buttonState) {
             ButtonState.Completed -> drawStartState(canvas)
             else -> drawLoadingState(canvas)
@@ -73,7 +83,7 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     private fun drawStartState(canvas: Canvas) {
-        paint.color = ContextCompat.getColor(context, R.color.white)
+        paint.color = textColor
         canvas.drawText(
             resources.getString(R.string.button_name),
             widthSize / 2 - paint.measureText(resources.getString(R.string.button_name)) / 2,
@@ -117,7 +127,7 @@ class LoadingButton @JvmOverloads constructor(
     private fun startProgressCircleAnimation() {
         progressCircleAnimator.cancel()
         progressCircleAnimator = ValueAnimator.ofInt(0, 360).apply {
-            duration = 5000
+            duration = animationDuration
             interpolator = LinearInterpolator()
             addUpdateListener { valueAnimator ->
                 currentSweepAngle = valueAnimator.animatedValue as Int
@@ -130,7 +140,7 @@ class LoadingButton @JvmOverloads constructor(
     private fun startProgressRectangleAnimation() {
         progressRectangleAnimator.cancel()
         progressRectangleAnimator = ValueAnimator.ofInt(0, widthSize.roundToInt()).apply {
-            duration = 5000
+            duration = animationDuration
             interpolator = LinearInterpolator()
 
             addUpdateListener { valueAnimator ->
