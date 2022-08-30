@@ -1,4 +1,4 @@
-package dev.marawanxmamdouh.loading
+package dev.marawanxmamdouh.downloadmanager
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter

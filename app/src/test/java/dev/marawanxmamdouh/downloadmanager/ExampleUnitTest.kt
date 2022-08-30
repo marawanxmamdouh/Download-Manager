@@ -1,4 +1,4 @@
-package dev.marawanxmamdouh.loading
+package dev.marawanxmamdouh.downloadmanager
 
 import org.junit.Test
 

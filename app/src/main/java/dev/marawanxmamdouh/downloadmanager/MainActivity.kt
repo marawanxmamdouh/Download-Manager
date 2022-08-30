@@ -1,4 +1,4 @@
-package dev.marawanxmamdouh.loading
+package dev.marawanxmamdouh.downloadmanager
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
@@ -17,7 +17,7 @@ import android.util.Log
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import dev.marawanxmamdouh.loading.util.sendNotification
+import dev.marawanxmamdouh.downloadmanager.util.sendNotification
 
 
 private const val TAG = "MainActivity"

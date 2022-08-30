@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Loading</string>
+    <string name="app_name">Download Manager</string>
 
     <string name="app_description">Download files from Internet</string>
     <string name="action_settings">Settings</string>

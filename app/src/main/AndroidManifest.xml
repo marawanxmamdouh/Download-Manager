@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="dev.marawanxmamdouh.loading">
+    package="dev.marawanxmamdouh.downloadmanager">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
@@ -19,7 +19,7 @@
         android:theme="@style/Theme.Loading"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name="dev.marawanxmamdouh.downloadmanager.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetailActivity"
+            android:name="dev.marawanxmamdouh.downloadmanager.DetailActivity"
             android:exported="true" />
     </application>
 

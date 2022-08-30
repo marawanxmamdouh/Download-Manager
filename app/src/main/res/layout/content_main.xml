@@ -54,7 +54,7 @@
             android:textSize="24sp" />
     </RadioGroup>
 
-    <dev.marawanxmamdouh.loading.LoadingButton
+    <dev.marawanxmamdouh.downloadmanager.LoadingButton
         android:id="@+id/custom_button"
         android:layout_width="0dp"
         android:layout_height="60dp"

@@ -1,11 +1,11 @@
-package dev.marawanxmamdouh.loading
+package dev.marawanxmamdouh.downloadmanager
 
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import dev.marawanxmamdouh.loading.databinding.ContentDetailBinding
+import dev.marawanxmamdouh.downloadmanager.databinding.ContentDetailBinding
 
 private const val TAG = "DetailActivity"
 
